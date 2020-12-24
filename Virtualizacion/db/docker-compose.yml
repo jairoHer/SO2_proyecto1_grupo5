@@ -1,0 +1,7 @@
+version: "3"
+services:
+ mongoso:
+  container_name: mongoso
+  image: mongo
+  ports:
+   - "27017:27017"
