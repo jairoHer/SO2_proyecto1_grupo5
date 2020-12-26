@@ -1,0 +1,27 @@
+version: '3'
+services:
+ mongoso2:
+  container_name: mongoso2
+  image: mongo
+  ports:
+   - "27017:27017"
+ backend:
+  container_name: backend
+  build: ./backend
+  ports:
+   - "5001:5001"
+  links:
+   - "mongoso2:mongoso2"
+  depends_on:
+   - mongoso2
+ frontend:
+  container_name: frontend
+  build: ./frontend
+  ports:
+   - "5000:5000"
+  links:
+   - "mongoso2:mongoso2"
+   - "backend:backend"
+  depends_on:
+   - mongoso2
+   - backend

@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+    {%for juego in juegos %}
+    <article class="media content-section">
+            <div class="media-body">
+              <div class="article-metadata">
+                <a class="mr-2" href="#">{{ juego.author }}</a>
+                <small class="text-muted">{{ juego.descargas }}</small>
+              </div>
+              <h2><a class="article-title" href="#">{{ juego.title }}</a></h2>
+              <p class="article-content">{{ juego.content }}</p>
+              <form action="{{ url_for('home') }}" method="POST">
+                <input id="juego" name="juego" type="hidden" value="{{juego.title}}">
+                <button class="btn btn-primary hidden-print" type="submit">Descargar</button>
+              </form>
+            </div>
+    </article>
+    {% endfor %}
+{% endblock content %}
