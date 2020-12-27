@@ -29,14 +29,14 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'e9d830bde37db8ca424cb0b55af9dac2'
 CORS(app)
 ruta = None
-clienteMongo= None
-#clienteMongo = MongoClient('mongoso2',port=27017)
-db = None
-#db = clienteMongo['proyecto1']
-coleccion = None
-#coleccion = db['videojuegos']
-usuarios = None
-#usuarios = db['usuarios']
+#clienteMongo= None
+clienteMongo = MongoClient('mongoso2',port=27017)
+#db = None
+db = clienteMongo['proyecto1']
+#coleccion = None
+coleccion = db['videojuegos']
+#usuarios = None
+usuarios = db['usuarios']
 usuario = ""
 
 def crearConexion(direccion):
@@ -135,8 +135,8 @@ def home():
     global ruta
     ip_address = request.host.split(':')[0]
     ruta = str(ip_address)
-    if clienteMongo ==None:   
-        crearConexion(str(ip_address))
+    #if clienteMongo ==None:   
+    #    crearConexion(str(ip_address))
     
     global usuario
     print(juegos)
