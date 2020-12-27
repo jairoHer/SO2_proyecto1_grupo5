@@ -10,8 +10,8 @@ import socket
 app = Flask(__name__)
 CORS(app)
 
-
-clienteMongo = MongoClient(str(socket.getfqdn()),port=27017)
+clienteMongo = MongoClient('mongodb://'+str(socket.getfqdn()),port=27017)
+#clienteMongo = MongoClient(str(socket.getfqdn()),port=27017)
 #clienteMongo = MongoClient('mongoso2',port=27017)
 #clienteMongo = MongoClient('localhost',port=27017)
 db = clienteMongo['proyecto1']
