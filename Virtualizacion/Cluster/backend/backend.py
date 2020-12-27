@@ -63,8 +63,11 @@ def agregarGame(usuario,nombre):
 
 @app.route('/disponibles',methods=['GET'])
 def disponibles():
+    global ruta
+    ip_address = request.host.split(':')[0]
+    ruta = str(ip_address)
     if clienteMongo ==None:   
-        crearConexion(str(ip_address))
+        crearConexion(str(ruta))
     if clienteMongo !=None:
         cursor = coleccion.find({})
         datos = []
@@ -79,8 +82,11 @@ def disponibles():
 
 @app.route('/agregarJuego',methods=['POST'])
 def agregarJuego():
+    global ruta
+    ip_address = request.host.split(':')[0]
+    ruta = str(ip_address)
     if clienteMongo ==None:   
-        crearConexion(str(ip_address))
+        crearConexion(str(ruta))
     solicitud = request.get_json(force=True, silent = True)
     if solicitud == None:
         return jsonify(
@@ -98,8 +104,11 @@ def agregarJuego():
 
 @app.route('/registro',methods=['POST'])
 def registro():
+    global ruta
+    ip_address = request.host.split(':')[0]
+    ruta = str(ip_address)
     if clienteMongo ==None:   
-        crearConexion(str(ip_address))
+        crearConexion(str(ruta))
     solicitud = request.get_json(force=True, silent = True)
     if solicitud == None:
         return jsonify(
