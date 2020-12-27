@@ -86,7 +86,7 @@ def hello():
     s.connect(("8.8.8.8", 80))
     myip = s.getsockname()[0]
     s.close()
-    ip_address = flask.request.remote_addr
+    ip_address = request.remote_addr
     cosa = str(socket.getfqdn())
     return '<h1>Api back '+str(ip_address)+'</h1>'
 
