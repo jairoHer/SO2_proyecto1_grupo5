@@ -9,16 +9,32 @@ import socket
 
 app = Flask(__name__)
 CORS(app)
-urlmongo = request.host.split(':')[0]
-
-clienteMongo = MongoClient('mongodb://'+str(socket.getfqdn()),port=27017)
+#urlmongo = request.host.split(':')[0]
+clienteMongo= None
+#clienteMongo = MongoClient('mongodb://'+str(socket.getfqdn()),port=27017)
 #clienteMongo = MongoClient(str(socket.getfqdn()),port=27017)
 #clienteMongo = MongoClient('mongoso2',port=27017)
 #clienteMongo = MongoClient('localhost',port=27017)
-db = clienteMongo['proyecto1']
-coleccion = db['videojuegos']
+db = None
+#db = clienteMongo['proyecto1']
+coleccion = None
+#coleccion = db['videojuegos']
+usuarios = None
+#usuarios = db['usuarios']
 
-usuarios = db['usuarios']
+def crearConexion(direccion):
+    try: 
+        global clienteMongo
+        #clienteMongo = MongoClient('mongodb://'+direccion,port=27017)
+        clienteMongo = MongoClient('mongoso2',port=27017)
+        global db
+        db = clienteMongo['proyecto1']
+        global coleccion
+        coleccion = db['videojuegos']
+        global usuarios
+        usuarios = db['usuarios']
+    except:
+        print("fallo en conexion")
 
 def ingresarUsuario(nombre,password):
     usuarios.insert_one({
@@ -83,13 +99,10 @@ def registro():
 
 @app.route('/')
 def hello():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    myip = s.getsockname()[0]
-    s.close()
     ip_address = request.host.split(':')[0]
-    cosa = str(socket.getfqdn())
-    return '<h1>Api back '+str(ip_address)+'--'+urlmongo+'</h1>'
+    if clienteMongo ==None:   
+        crearConexion(str(ip_address))
+    return '<h1>Api back '+str(ip_address)+'</h1>'
 
 if __name__ == '__main__':
     #app.run()
