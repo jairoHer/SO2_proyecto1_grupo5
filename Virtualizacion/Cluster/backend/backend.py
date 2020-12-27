@@ -11,6 +11,7 @@ app = Flask(__name__)
 CORS(app)
 #urlmongo = request.host.split(':')[0]
 clienteMongo= None
+ruta = None
 #clienteMongo = MongoClient('mongodb://'+str(socket.getfqdn()),port=27017)
 #clienteMongo = MongoClient(str(socket.getfqdn()),port=27017)
 #clienteMongo = MongoClient('mongoso2',port=27017)
@@ -37,34 +38,49 @@ def crearConexion(direccion):
         print("fallo en conexion")
 
 def ingresarUsuario(nombre,password):
-    usuarios.insert_one({
-        'nombre': nombre,
-        'password': password,
-        'juegos':[],
-    })
+    try:
+        usuarios.insert_one({
+            'nombre': nombre,
+            'password': password,
+            'juegos':[],
+        })
+    except:
+        print('no se pudo ingresar el usuario')
 
 def agregarGame(usuario,nombre):
     print(usuario,nombre)
-    usuarios.update(
-        {'nombre':usuario},
-        {'$push':{'juegos':{
-                        'title': nombre,
-                    }    
-                }
-        }
-    )
+    try:
+        usuarios.update(
+            {'nombre':usuario},
+            {'$push':{'juegos':{
+                            'title': nombre,
+                        }    
+                    }
+            }
+        )
+    except:
+        print('no se pudo agregar juego a lista de usuario')
 
 @app.route('/disponibles',methods=['GET'])
 def disponibles():
-    cursor = coleccion.find({})
-    datos = []
-    for documento in cursor:
-        datos.append({'author':documento['author'],'title':documento['title'],'content':documento['content'],'descargas':documento['descargas']})
+    if clienteMongo ==None:   
+        crearConexion(str(ip_address))
+    if clienteMongo !=None:
+        cursor = coleccion.find({})
+        datos = []
+        for documento in cursor:
+            datos.append({'author':documento['author'],'title':documento['title'],'content':documento['content'],'descargas':documento['descargas']})
 
-    return jsonify(datos)
+        return jsonify(datos)
+    else:
+        return jsonify(
+            estado='Error de conexion con mongo'
+        )
 
 @app.route('/agregarJuego',methods=['POST'])
 def agregarJuego():
+    if clienteMongo ==None:   
+        crearConexion(str(ip_address))
     solicitud = request.get_json(force=True, silent = True)
     if solicitud == None:
         return jsonify(
@@ -82,6 +98,8 @@ def agregarJuego():
 
 @app.route('/registro',methods=['POST'])
 def registro():
+    if clienteMongo ==None:   
+        crearConexion(str(ip_address))
     solicitud = request.get_json(force=True, silent = True)
     if solicitud == None:
         return jsonify(
@@ -99,10 +117,15 @@ def registro():
 
 @app.route('/')
 def hello():
+    global ruta
     ip_address = request.host.split(':')[0]
+    ruta = str(ip_address)
     if clienteMongo ==None:   
         crearConexion(str(ip_address))
-    return '<h1>Api back '+str(ip_address)+'</h1>'
+        return '<h1>Este es el servidor backend</h1>'
+    else:
+        return '<h1>Este es el backend</h1>'
+    #return '<h1>Api back '+str(ip_address)+'</h1>'
 
 if __name__ == '__main__':
     #app.run()
