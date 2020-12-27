@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+  labels:
+    app: proyecto1
+  namespace: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: proyecto1
+  template:
+    metadata:
+      labels:
+        app: proyecto1
+    spec:
+      containers:
+      - name: react
+        image: jairinho/cluster_frontend
+        ports:
+        - containerPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: proyecto1
+  namespace: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proyecto1
+  template:
+    metadata:
+      labels:
+        app: proyecto1
+    spec:
+      containers:
+      - name: node
+        image: jairinho/cluster_backend
+        ports:
+        - containerPort: 5001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongoso2
+  labels:
+    app: proyecto1
+  namespace: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proyecto1
+  template:
+    metadata:
+      labels:
+        app: proyecto1
+    spec:
+      containers:
+      - name: mongoso2
+        image: mongo
+        ports:
+        - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: conexion
+  namespace: frontend
+spec:
+  type: LoadBalancer
+  ports:
+  - name: backend
+    port: 5001
+    targetPort: 5001
+  - name: front
+    port: 5000
+    targetPort: 5000
+  - name: mongoso2
+    port: 27017
+    targetPort: 27017
+  selector:
+    app: proyecto1

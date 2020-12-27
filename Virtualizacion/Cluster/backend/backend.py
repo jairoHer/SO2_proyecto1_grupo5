@@ -5,11 +5,14 @@ from pymongo import MongoClient
 import pymongo
 import requests
 import json
+import socket
 
 app = Flask(__name__)
 CORS(app)
 
-clienteMongo = MongoClient('mongoso2',port=27017)
+
+clienteMongo = MongoClient(str(socket.getfqdn()),port=27017)
+#clienteMongo = MongoClient('mongoso2',port=27017)
 #clienteMongo = MongoClient('localhost',port=27017)
 db = clienteMongo['proyecto1']
 coleccion = db['videojuegos']

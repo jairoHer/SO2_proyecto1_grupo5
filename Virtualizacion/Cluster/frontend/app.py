@@ -7,6 +7,7 @@ import pymongo
 import requests
 import json
 import os
+import socket
 
 juegos=[
     {
