@@ -9,6 +9,7 @@ import socket
 
 app = Flask(__name__)
 CORS(app)
+urlmongo = request.host.split(':')[0]
 
 clienteMongo = MongoClient('mongodb://'+str(socket.getfqdn()),port=27017)
 #clienteMongo = MongoClient(str(socket.getfqdn()),port=27017)
@@ -88,7 +89,7 @@ def hello():
     s.close()
     ip_address = request.host.split(':')[0]
     cosa = str(socket.getfqdn())
-    return '<h1>Api back '+str(ip_address)+'</h1>'
+    return '<h1>Api back '+str(ip_address)+'--'+urlmongo+'</h1>'
 
 if __name__ == '__main__':
     #app.run()
