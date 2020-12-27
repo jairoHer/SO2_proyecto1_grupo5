@@ -29,21 +29,21 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'e9d830bde37db8ca424cb0b55af9dac2'
 CORS(app)
 ruta = None
-#clienteMongo= None
-clienteMongo = MongoClient('mongoso2',port=27017)
-#db = None
-db = clienteMongo['proyecto1']
-#coleccion = None
-coleccion = db['videojuegos']
-#usuarios = None
-usuarios = db['usuarios']
+clienteMongo= None
+#clienteMongo = MongoClient('mongoso2',port=27017)
+db = None
+#db = clienteMongo['proyecto1']
+coleccion = None
+#coleccion = db['videojuegos']
+usuarios = None
+#usuarios = db['usuarios']
 usuario = ""
 
 def crearConexion(direccion):
     try: 
         global clienteMongo
-        #clienteMongo = MongoClient('mongodb://'+direccion,port=27017)
-        clienteMongo = MongoClient('mongoso2',port=27017)
+        clienteMongo = MongoClient('mongodb://'+direccion,port=27017)
+        #clienteMongo = MongoClient('mongoso2',port=27017)
         global db
         db = clienteMongo['proyecto1']
         global coleccion
@@ -61,7 +61,9 @@ def ingresarUsuario(nombre,password):
             "nombre" : nombre,
             "password" : password, 
         }
-    response = requests.post("http://backend:5001/registro", json=json_usuario)
+    ip_address = request.host.split(':')[0]
+    response = requests.post("http://"+str(ip_address)+":5001/registro", json=json_usuario)
+    #response = requests.post("http://backend:5001/registro", json=json_usuario)
     solicitud = response.json()
     
     #usuarios.insert_one({
@@ -81,8 +83,9 @@ def verficarExistencia(nombre,password):
 def obtenerDatos():
     #cursor = coleccion.find({})
     #videojuegos = []
-
-    solicitud = requests.get('http://backend:5001/disponibles', verify=False)
+    ip_address = request.host.split(':')[0]
+    solicitud = requests.get('http://'+str(ip_address)+':5001/disponibles', verify=False)
+    #solicitud = requests.get('http://backend:5001/disponibles', verify=False)
     datos = solicitud.json()
 
     #for documento in cursor:
@@ -106,7 +109,9 @@ def agregarJuego(usuario,nombre):
             "nombre" : usuario,
             "juego" : nombre, 
         }
-    response = requests.post("http://backend:5001/agregarJuego", json=json_usuario)
+    ip_address = request.host.split(':')[0]
+    response = requests.post("http://"+str(ip_address)+":5001/agregarJuego", json=json_usuario)
+    #response = requests.post("http://backend:5001/agregarJuego", json=json_usuario)
     solicitud = response.json()
 
     #usuarios.update(
@@ -135,8 +140,9 @@ def home():
     global ruta
     ip_address = request.host.split(':')[0]
     ruta = str(ip_address)
-    #if clienteMongo ==None:   
-    #    crearConexion(str(ip_address))
+    if clienteMongo ==None:   
+        crearConexion(str(ip_address))
+        return '<h1>Preparando conexion mongo...</h1>'
     
     global usuario
     print(juegos)
@@ -154,11 +160,16 @@ def home():
 
 @app.route('/juegos',methods=['GET','POST'])
 def juegos():
+    global ruta
+    ip_address = request.host.split(':')[0]
+    ruta = str(ip_address)
+    if clienteMongo ==None:   
+        crearConexion(str(ip_address))
     print("mi usuario es: "+usuario)
-    videojuegos = obtenerDatos()
     if usuario=="":
         flash(f'Debe estar logeado para ver sus juegos', 'danger')
         return redirect(url_for('home'))
+    
     juegs = obtenerJuegosUsuario(usuario)
     return render_template('juegos.html', juegos=juegs,usuario=usuario)
 
@@ -174,6 +185,11 @@ def register():
 
 @app.route("/login", methods=['GET','POST'])
 def login():
+    global ruta
+    ip_address = request.host.split(':')[0]
+    ruta = str(ip_address)
+    if clienteMongo ==None:   
+        crearConexion(str(ip_address))
     form = Login()
     global usuario
     if form.validate_on_submit():
