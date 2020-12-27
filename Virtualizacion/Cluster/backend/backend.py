@@ -26,8 +26,8 @@ usuarios = None
 def crearConexion(direccion):
     try: 
         global clienteMongo
-        #clienteMongo = MongoClient('mongodb://'+direccion,port=27017)
-        clienteMongo = MongoClient('mongoso2',port=27017)
+        clienteMongo = MongoClient('mongodb://'+direccion,port=27017)
+        #clienteMongo = MongoClient('mongoso2',port=27017)
         global db
         db = clienteMongo['proyecto1']
         global coleccion
