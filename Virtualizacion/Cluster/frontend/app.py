@@ -28,13 +28,30 @@ juegos=[
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'e9d830bde37db8ca424cb0b55af9dac2'
 CORS(app)
-
-clienteMongo = MongoClient('mongoso2',port=27017)
+ruta = None
+clienteMongo= None
+#clienteMongo = MongoClient('mongoso2',port=27017)
+db = None
 db = clienteMongo['proyecto1']
-coleccion = db['videojuegos']
-
-usuarios = db['usuarios']
+coleccion = None
+#coleccion = db['videojuegos']
+usuarios = None
+#usuarios = db['usuarios']
 usuario = ""
+
+def crearConexion(direccion):
+    try: 
+        global clienteMongo
+        #clienteMongo = MongoClient('mongodb://'+direccion,port=27017)
+        clienteMongo = MongoClient('mongoso2',port=27017)
+        global db
+        db = clienteMongo['proyecto1']
+        global coleccion
+        coleccion = db['videojuegos']
+        global usuarios
+        usuarios = db['usuarios']
+    except:
+        print("fallo en conexion")
 
 #esto ira al backend en forma de api despues
 
@@ -115,6 +132,12 @@ def obtenerJuegosUsuario(usuario):
 @app.route('/home', methods=['GET','POST'])
 def home():
     #return "<h1>Aqui estara los juegos</h1>"
+    global ruta
+    ip_address = request.host.split(':')[0]
+    ruta = str(ip_address)
+    if clienteMongo ==None:   
+        crearConexion(str(ip_address))
+    
     global usuario
     print(juegos)
     videojuegos = obtenerDatos()
