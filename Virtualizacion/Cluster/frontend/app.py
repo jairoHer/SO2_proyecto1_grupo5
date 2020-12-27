@@ -32,7 +32,7 @@ ruta = None
 clienteMongo= None
 #clienteMongo = MongoClient('mongoso2',port=27017)
 db = None
-db = clienteMongo['proyecto1']
+#db = clienteMongo['proyecto1']
 coleccion = None
 #coleccion = db['videojuegos']
 usuarios = None
