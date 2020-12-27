@@ -83,7 +83,7 @@ def registro():
 @app.route('/')
 def hello():
     cosa = str(socket.getfqdn())
-    return '<h1>Api back '+cosa+'</h1>
+    return '<h1>Api back '+cosa+'</h1>'
 
 if __name__ == '__main__':
     #app.run()
