@@ -83,7 +83,7 @@ def ingresarUsuario(nombre,password):
 def verficarExistencia(nombre,password):
     dato = None
     valido = False
-    while valido = False:
+    while valido == False:
         try:
             dato=usuarios.find_one(
                 {"nombre":nombre,"password":password},
