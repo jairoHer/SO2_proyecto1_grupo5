@@ -81,10 +81,22 @@ def ingresarUsuario(nombre,password):
     #})
 
 def verficarExistencia(nombre,password):
-    dato=usuarios.find_one(
-        {"nombre":nombre,"password":password},
-        {"_id" : 0}
-    )
+    dato = None
+    valido = False
+    while valido = False:
+        try:
+            dato=usuarios.find_one(
+                {"nombre":nombre,"password":password},
+                {"_id" : 0}
+            )
+            valido = True
+            break
+        except:
+            time.sleep(1)
+            ip_address = request.host.split(':')[0]
+            crearConexion(str(ip_address))
+            dato = None
+            continue
     return dato
 #--------
 
