@@ -125,10 +125,20 @@ def obtenerDatos():
     #return videojuegos
 
 def descarga(nombre):
-    coleccion.update(
-        {'title':nombre},
-        {'$inc':{'descargas':1}}
-    )
+    valido = False
+    while valido == False:
+        try:           
+            coleccion.update(
+                {'title':nombre},
+                {'$inc':{'descargas':1}}
+            )
+            valido = True
+            break
+        except:
+            time.sleep(1)
+            ip_address = request.host.split(':')[0]
+            crearConexion(str(ip_address))
+            continue
 
 def agregarJuego(usuario,nombre):
     print(usuario,nombre)
@@ -158,13 +168,23 @@ def agregarJuego(usuario,nombre):
     #)
 
 def obtenerJuegosUsuario(usuario):
-    dato=usuarios.find_one(
-        {"nombre":usuario},
-        {"_id" : 0,"password":0,"nombre":0}
-    )
-    for juego in dato['juegos']:
-        print(juego)
-    print(dato)
+    valido = False
+    while valido == False:
+        try:
+            dato=usuarios.find_one(
+                {"nombre":usuario},
+                {"_id" : 0,"password":0,"nombre":0}
+            )
+            valido=True
+            break
+        except:
+            time.sleep(1)
+            ip_address = request.host.split(':')[0]
+            crearConexion(str(ip_address))
+            continue
+    #for juego in dato['juegos']:
+    #    print(juego)
+    #print(dato)
     return dato['juegos']
 
 @app.route('/',methods=['GET','POST'])

@@ -6,6 +6,7 @@ import pymongo
 import requests
 import json
 import socket
+import time
 
 app = Flask(__name__)
 CORS(app)
@@ -38,28 +39,62 @@ def crearConexion(direccion):
         print("fallo en conexion")
 
 def ingresarUsuario(nombre,password):
-    try:
-        usuarios.insert_one({
-            'nombre': nombre,
-            'password': password,
-            'juegos':[],
-        })
-    except:
-        print('no se pudo ingresar el usuario')
+    valido = False
+    while valido == False:
+        try:
+            usuarios.insert_one({
+                'nombre': nombre,
+                'password': password,
+                'juegos':[],
+            })
+            valido = True
+            break
+        except:
+            time.sleep(1)
+            ip_address = request.host.split(':')[0]
+            crearConexion(str(ip_address))
+            continue
+            #print('no se pudo ingresar el usuario')
 
 def agregarGame(usuario,nombre):
     print(usuario,nombre)
-    try:
-        usuarios.update(
-            {'nombre':usuario},
-            {'$push':{'juegos':{
-                            'title': nombre,
-                        }    
-                    }
-            }
-        )
-    except:
-        print('no se pudo agregar juego a lista de usuario')
+    valido = False
+    while valido == False:
+        try:
+            usuarios.update(
+                {'nombre':usuario},
+                {'$push':{'juegos':{
+                                'title': nombre,
+                            }    
+                        }
+                }
+            )
+            valido = True
+            break
+        except:
+            time.sleep(1)
+            ip_address = request.host.split(':')[0]
+            crearConexion(str(ip_address))
+            continue
+        #print('no se pudo agregar juego a lista de usuario')
+
+def darJuegosDisponibles():
+    valido = False
+    datos = []
+    while valido == False:
+        try:
+            cursor = coleccion.find({})
+            #datos = []
+            for documento in cursor:
+                datos.append({'author':documento['author'],'title':documento['title'],'content':documento['content'],'descargas':documento['descargas']})
+            valido = True
+            break
+        except:
+            time.sleep(1)
+            ip_address = request.host.split(':')[0]
+            crearConexion(str(ip_address))
+            continue
+    return datos
 
 @app.route('/disponibles',methods=['GET'])
 def disponibles():
@@ -69,10 +104,10 @@ def disponibles():
     if clienteMongo ==None:   
         crearConexion(str(ruta))
     if clienteMongo !=None:
-        cursor = coleccion.find({})
-        datos = []
-        for documento in cursor:
-            datos.append({'author':documento['author'],'title':documento['title'],'content':documento['content'],'descargas':documento['descargas']})
+        #cursor = coleccion.find({})
+        datos = darJuegosDisponibles()
+        #for documento in cursor:
+        #    datos.append({'author':documento['author'],'title':documento['title'],'content':documento['content'],'descargas':documento['descargas']})
 
         return jsonify(datos)
     else:
