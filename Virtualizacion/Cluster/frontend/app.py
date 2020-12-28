@@ -8,6 +8,7 @@ import requests
 import json
 import os
 import socket
+import time
 
 juegos=[
     {
@@ -83,11 +84,18 @@ def verficarExistencia(nombre,password):
 def obtenerDatos():
     #cursor = coleccion.find({})
     #videojuegos = []
-    ip_address = request.host.split(':')[0]
-    solicitud = requests.get('http://'+str(ip_address)+':5001/disponibles', verify=False)
-    #solicitud = requests.get('http://backend:5001/disponibles', verify=False)
-    datos = solicitud.json()
-
+    datos = []
+    solicitud = ''
+    while solicitud == '':
+        try:
+            ip_address = request.host.split(':')[0]
+            solicitud = requests.get('http://'+str(ip_address)+':5001/disponibles', verify=False)
+            #solicitud = requests.get('http://backend:5001/disponibles', verify=False)
+            datos = solicitud.json()
+            break
+        except:
+            time.sleep(2)
+            continue
     #for documento in cursor:
     #    videojuegos.append({'author':documento['author'],'title':documento['title'],'content':documento['content'],'descargas':documento['descargas']})
         #print(documento['title'])
