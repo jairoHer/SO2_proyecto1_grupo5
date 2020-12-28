@@ -62,10 +62,17 @@ def ingresarUsuario(nombre,password):
             "nombre" : nombre,
             "password" : password, 
         }
-    ip_address = request.host.split(':')[0]
-    response = requests.post("http://"+str(ip_address)+":5001/registro", json=json_usuario)
-    #response = requests.post("http://backend:5001/registro", json=json_usuario)
-    solicitud = response.json()
+    response = ''
+    while response == '':
+        try:
+            ip_address = request.host.split(':')[0]
+            response = requests.post("http://"+str(ip_address)+":5001/registro", json=json_usuario)
+            #response = requests.post("http://backend:5001/registro", json=json_usuario)
+            solicitud = response.json()
+            break
+        except:
+            time.sleep(1)
+            continue
     
     #usuarios.insert_one({
     #    'nombre': nombre,
@@ -94,7 +101,7 @@ def obtenerDatos():
             datos = solicitud.json()
             break
         except:
-            time.sleep(2)
+            time.sleep(1)
             continue
     #for documento in cursor:
     #    videojuegos.append({'author':documento['author'],'title':documento['title'],'content':documento['content'],'descargas':documento['descargas']})
@@ -117,10 +124,17 @@ def agregarJuego(usuario,nombre):
             "nombre" : usuario,
             "juego" : nombre, 
         }
-    ip_address = request.host.split(':')[0]
-    response = requests.post("http://"+str(ip_address)+":5001/agregarJuego", json=json_usuario)
-    #response = requests.post("http://backend:5001/agregarJuego", json=json_usuario)
-    solicitud = response.json()
+    response=''
+    while response=='':
+        try:
+            ip_address = request.host.split(':')[0]
+            response = requests.post("http://"+str(ip_address)+":5001/agregarJuego", json=json_usuario)
+            #response = requests.post("http://backend:5001/agregarJuego", json=json_usuario)
+            solicitud = response.json()
+            break
+        except:
+            time.sleep(1)
+            continue
 
     #usuarios.update(
     #    {'nombre':usuario},
