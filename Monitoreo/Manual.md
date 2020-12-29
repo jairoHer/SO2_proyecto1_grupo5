@@ -1,5 +1,15 @@
 # Manual Técnico: Monitoreo del sistema
 
+## Integrantes
+| Carnet | Nombre |
+| ------ | ------ |
+| 201404423 | Jairo Pablo Hernández Guzmán |
+| 201504042 | Julio Estuardo Gómez Alonzo  |
+| 201503750 | Carlos Eduardo Carías Salan |
+
+___
+
+
 ## Instalación y configuración de Prometheus
 
 
