@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: frontend
+  name: sopes
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -9,9 +9,15 @@ metadata:
   name: front
   labels:
     app: proyecto1
-  namespace: frontend
+  namespace: sopes
 spec:
   replicas: 2
+  minReadySeconds: 30
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate 
   selector:
     matchLabels:
       app: proyecto1
@@ -21,7 +27,7 @@ spec:
         app: proyecto1
     spec:
       containers:
-      - name: react
+      - name: flask-f
         image: jairinho/cluster_frontend
         ports:
         - containerPort: 5000
@@ -32,9 +38,15 @@ metadata:
   name: backend
   labels:
     app: proyecto1
-  namespace: frontend
+  namespace: sopes
 spec:
-  replicas: 1
+  replicas: 3
+  minReadySeconds: 30
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate 
   selector:
     matchLabels:
       app: proyecto1
@@ -44,50 +56,26 @@ spec:
         app: proyecto1
     spec:
       containers:
-      - name: node
+      - name: flask-b
         image: jairinho/cluster_backend
         ports:
         - containerPort: 5001
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mongoso2
-  labels:
-    app: proyecto1
-  namespace: frontend
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: proyecto1
-  template:
-    metadata:
-      labels:
-        app: proyecto1
-    spec:
-      containers:
-      - name: mongoso2
-        image: mongo
-        ports:
-        - containerPort: 27017
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: conexion
-  namespace: frontend
+  namespace: sopes
 spec:
   type: LoadBalancer
   ports:
   - name: backend
+    protocol: TCP
     port: 5001
     targetPort: 5001
   - name: front
+    protocol: TCP
     port: 5000
     targetPort: 5000
-  - name: mongoso2
-    port: 27017
-    targetPort: 27017
   selector:
     app: proyecto1
