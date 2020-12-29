@@ -11,18 +11,19 @@ import time
 app = Flask(__name__)
 CORS(app)
 #urlmongo = request.host.split(':')[0]
-clienteMongo= None
+#clienteMongo= None
 ruta = None
 #clienteMongo = MongoClient('mongodb://'+str(socket.getfqdn()),port=27017)
 #clienteMongo = MongoClient(str(socket.getfqdn()),port=27017)
 #clienteMongo = MongoClient('mongoso2',port=27017)
 #clienteMongo = MongoClient('localhost',port=27017)
-db = None
-#db = clienteMongo['proyecto1']
-coleccion = None
-#coleccion = db['videojuegos']
-usuarios = None
-#usuarios = db['usuarios']
+clienteMongo = MongoClient('mongodb://104.197.235.139',port=27017)
+#db = None
+db = clienteMongo['proyecto1']
+#coleccion = None
+coleccion = db['videojuegos']
+#usuarios = None
+usuarios = db['usuarios']
 
 def crearConexion(direccion):
     try: 
@@ -52,6 +53,7 @@ def ingresarUsuario(nombre,password):
         except:
             time.sleep(1)
             ip_address = request.host.split(':')[0]
+            ip_address ='104.197.235.139'
             crearConexion(str(ip_address))
             continue
             #print('no se pudo ingresar el usuario')
@@ -74,6 +76,7 @@ def agregarGame(usuario,nombre):
         except:
             time.sleep(1)
             ip_address = request.host.split(':')[0]
+            ip_address ='104.197.235.139'
             crearConexion(str(ip_address))
             continue
         #print('no se pudo agregar juego a lista de usuario')
@@ -92,6 +95,7 @@ def darJuegosDisponibles():
         except:
             time.sleep(1)
             ip_address = request.host.split(':')[0]
+            ip_address ='104.197.235.139'
             crearConexion(str(ip_address))
             continue
     return datos
@@ -100,6 +104,7 @@ def darJuegosDisponibles():
 def disponibles():
     global ruta
     ip_address = request.host.split(':')[0]
+    ip_address ='104.197.235.139'
     ruta = str(ip_address)
     if clienteMongo ==None:   
         crearConexion(str(ruta))
@@ -119,6 +124,7 @@ def disponibles():
 def agregarJuego():
     global ruta
     ip_address = request.host.split(':')[0]
+    ip_address ='104.197.235.139'
     ruta = str(ip_address)
     if clienteMongo ==None:   
         crearConexion(str(ruta))
@@ -141,6 +147,7 @@ def agregarJuego():
 def registro():
     global ruta
     ip_address = request.host.split(':')[0]
+    ip_address ='104.197.235.139'
     ruta = str(ip_address)
     if clienteMongo ==None:   
         crearConexion(str(ruta))
@@ -163,6 +170,7 @@ def registro():
 def hello():
     global ruta
     ip_address = request.host.split(':')[0]
+    ip_address ='104.197.235.139'
     ruta = str(ip_address)
     if clienteMongo ==None:   
         crearConexion(str(ip_address))

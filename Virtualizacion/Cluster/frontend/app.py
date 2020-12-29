@@ -30,14 +30,16 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'e9d830bde37db8ca424cb0b55af9dac2'
 CORS(app)
 ruta = None
-clienteMongo= None
+#clienteMongo= None
+#104.197.235.139
+clienteMongo = MongoClient('mongodb://104.197.235.139',port=27017)
 #clienteMongo = MongoClient('mongoso2',port=27017)
-db = None
-#db = clienteMongo['proyecto1']
-coleccion = None
-#coleccion = db['videojuegos']
-usuarios = None
-#usuarios = db['usuarios']
+#db = None
+db = clienteMongo['proyecto1']
+#coleccion = None
+coleccion = db['videojuegos']
+#usuarios = None
+usuarios = db['usuarios']
 usuario = ""
 
 def crearConexion(direccion):
@@ -94,6 +96,7 @@ def verficarExistencia(nombre,password):
         except:
             time.sleep(1)
             ip_address = request.host.split(':')[0]
+            ip_address = '104.197.235.139'
             crearConexion(str(ip_address))
             dato = None
             continue
@@ -137,6 +140,7 @@ def descarga(nombre):
         except:
             time.sleep(1)
             ip_address = request.host.split(':')[0]
+            ip_address = '104.197.235.139'
             crearConexion(str(ip_address))
             continue
 
@@ -180,6 +184,7 @@ def obtenerJuegosUsuario(usuario):
         except:
             time.sleep(1)
             ip_address = request.host.split(':')[0]
+            ip_address = '104.197.235.139'
             crearConexion(str(ip_address))
             continue
     #for juego in dato['juegos']:
@@ -194,7 +199,8 @@ def home():
     global ruta
     ip_address = request.host.split(':')[0]
     ruta = str(ip_address)
-    if clienteMongo ==None:   
+    if clienteMongo ==None:
+        ip_address = '104.197.235.139'   
         crearConexion(str(ip_address))
         return '<h1>Preparando conexion mongo...</h1>'
     
@@ -216,6 +222,7 @@ def home():
 def juegos():
     global ruta
     ip_address = request.host.split(':')[0]
+    ip_address = '104.197.235.139'
     ruta = str(ip_address)
     if clienteMongo ==None:   
         crearConexion(str(ip_address))
@@ -241,6 +248,7 @@ def register():
 def login():
     global ruta
     ip_address = request.host.split(':')[0]
+    ip_address = '104.197.235.139'
     ruta = str(ip_address)
     if clienteMongo ==None:   
         crearConexion(str(ip_address))
