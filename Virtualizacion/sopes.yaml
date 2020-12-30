@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sopes
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+  labels:
+    app: proyecto1
+  namespace: sopes
+spec:
+  replicas: 2
+  minReadySeconds: 30
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate 
+  selector:
+    matchLabels:
+      app: proyecto1
+  template:
+    metadata:
+      labels:
+        app: proyecto1
+    spec:
+      containers:
+      - name: flask-f
+        image: jairinho/cluster_frontend
+        ports:
+        - containerPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: proyecto1
+  namespace: sopes
+spec:
+  replicas: 3
+  minReadySeconds: 30
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate 
+  selector:
+    matchLabels:
+      app: proyecto1
+  template:
+    metadata:
+      labels:
+        app: proyecto1
+    spec:
+      containers:
+      - name: flask-b
+        image: jairinho/cluster_backend
+        ports:
+        - containerPort: 5001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: conexion
+  namespace: sopes
+spec:
+  type: LoadBalancer
+  ports:
+  - name: backend
+    protocol: TCP
+    port: 5001
+    targetPort: 5001
+  - name: front
+    protocol: TCP
+    port: 5000
+    targetPort: 5000
+  selector:
+    app: proyecto1

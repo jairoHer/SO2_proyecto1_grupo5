@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>{{usuario}}</h2>
+<h3>Descargas hechas</h3>
+    {%for juego in juegos %}
+    <article class="media content-section">
+            <div class="media-body">
+              <div class="article-metadata">
+              </div>
+              <h2><a class="article-title" href="#">{{ juego.title }}</a></h2>
+              
+            </div>
+    </article>
+    {% endfor %}
+{% endblock content %}
